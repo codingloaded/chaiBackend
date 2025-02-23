@@ -15,7 +15,13 @@ app.use(
 
 app.use(express.json({ limit: limit }));
 app.use(express.urlencoded({ extended: true, limit: limit }));
-app.use(express.static("public"))
-app.use(cookieParser())
+app.use(express.static("public"));
+app.use(cookieParser());
+
+//import Router
+import userRouter from "./routes/user.routes.js";
+
+//routes declaration
+app.use("/api/v1/users", userRouter); //-> http://localhost8000/api/v1/users/register
 
 export { app };
