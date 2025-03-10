@@ -15,7 +15,7 @@ const uploadOnCloudinary = async (localfilepath) => {
     const response = await cloudinary.uploader.upload(localfilepath, {
       resource_type: "auto",
     });
-    console.log("file is uploaded", response.url); //not necessery
+    // console.log("file is uploaded", response.url); //not necessery
 
     fs.unlinkSync(localfilepath); //sync method of unlink the file path after uploading, this is must do method thats why better to keep it in sync
 
