@@ -5,11 +5,11 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 
-const generateAccessAndRefereshTokens = async (userId) => {
+const generateAccessAndRefereshTokens = async function (userId) {
   try {
     const user = await User.findById(userId);
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
 
     user.refreshToken = refreshToken; //update refresh token in user model
     await user.save({ validateBeforeSave: false }); //save the user with only refresh token
@@ -113,23 +113,26 @@ const loginUser = asyncHandler(async (req, res) => {
   //send cookie
 
   const { email, username, password } = req.body;
-  console.log(email);
 
-  if (!username || !email) {
+  // if (!username && !email) {
+  if (!email) {
+    // console.log("username or email is required");
     throw new ApiError(400, "Username or email is required");
   }
 
   if (!password) {
+    console.log("password is required");
     throw new ApiError(400, "Password is required");
   }
 
   const user = await User.findOne({ $or: [{ username }, { email }] });
-
+  // console.log(user);
   if (!user) {
     throw new ApiError(404, "Invalid credentials");
   }
 
   const isPasswordValid = await user.isPasswordCorrect(password);
+
   if (!isPasswordValid) {
     throw new ApiError(401, "Invalid credentials");
   }
